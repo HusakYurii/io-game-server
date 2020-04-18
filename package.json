@@ -2,9 +2,7 @@
   "name": "io-game-server",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "run-server": "nodemon"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HusakYurii/io-game-server.git"
@@ -20,7 +18,5 @@
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.3"
-  }
+  "devDependencies": {}
 }
