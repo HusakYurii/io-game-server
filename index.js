@@ -7,7 +7,7 @@ const socketIo = require('socket.io')(httpServer);
 
 const PORT = process.env.PORT || 9090;
 
-expressApp.use(Express.static(path.join(__dirname, '../dist')));
+expressApp.use(Express.static(path.join(__dirname, '../dist/client')));
 
 socketIo.on('connection', (clientSocket) => {
     console.log(`A new user has been connected`);
