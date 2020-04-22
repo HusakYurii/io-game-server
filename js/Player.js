@@ -1,7 +1,8 @@
 class Player {
-    constructor(socket, id, roomId) {
+    constructor(socket, id) {
         this.socket = socket;
-        this.roomId = roomId;
+        this.roomId = "";
+        this.name = ""
         this.id = id;
 
         this.position = {
