@@ -12,6 +12,14 @@ class GameRoom {
     get isEmpty() {
         return this.players.size === 0;
     }
+
+    addPlayer(player) {
+        this.players.set(player.id, player);
+    }
+
+    deletePlayer(playerId) {
+        this.players.delete(playerId);
+    }
 }
 
 module.exports = GameRoom;
