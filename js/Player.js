@@ -11,6 +11,22 @@ class Player {
         }
     }
 
+    /**
+     * Set user's room Id as s/he logged in
+     * @param {string} roomId 
+     */
+    setRoomId(roomId) {
+        this.roomId = roomId;
+    }
+
+    /**
+     * Set user's name as s/he logged in
+     * @param {string} name 
+     */
+    setName(name) {
+        this.name = name;
+    }
+
     removeAllListeners() {
         this.socket.removeAllListeners();
     }

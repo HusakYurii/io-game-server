@@ -8,7 +8,7 @@ class RoomsManager {
     }
 
     get isFull() {
-        return this.maxRooms === this.rooms.length;
+        return this.maxRooms === this.rooms.size;
     }
 
     /**
@@ -47,7 +47,8 @@ class RoomsManager {
             }
         }
 
-        player.roomId = room.id;
+        player.setRoomId(room.id);
+        player.setName(data.name);
         room.addPlayer(player);
         return room.id;
     }
