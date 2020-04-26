@@ -1,6 +1,8 @@
 const GameRoomsManager = require('./GameRoomsManager.js');
 const Player = require('./Player.js');
 
+const Logger = require("./Logger.js");
+
 class ConnectionManager {
     constructor(connectionSocket) {
         this.connectionsPool = new Map();
@@ -10,6 +12,8 @@ class ConnectionManager {
 
     init() {
         this.connectionSocket.on("connection", this.onConnection.bind(this));
+        Logger.addDividerLabel("Initialization");
+        Logger.logMessage("Socket initialized...");
     }
 
     onConnection(playerSocket) {
@@ -19,6 +23,10 @@ class ConnectionManager {
         player.emit("user-connected", { id: player.id });
         player.on("disconnect", this.onDisconnection.bind(this, player.id));
         player.on("login-user", this.onPlayerLogin.bind(this));
+
+        Logger.addDividerLabel("New User connected", "#0b74de");
+        Logger.logMessage("New user has beeen connected and user data was send back:");
+        Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
     }
 
     onDisconnection(playerId) {
@@ -28,6 +36,12 @@ class ConnectionManager {
         player.removeAllListeners();
 
         this.gameRoomsManager.deletePlayerFromRoom(player);
+
+        Logger.addDividerLabel("A User disconnected", "#28a134");
+        Logger.logMessage("A user has been disconnected:");
+        Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
+        Logger.logMessage(`Connection Manager - current # of all users: ${this.connectionsPool.size}`);
+        Logger.logMessage(`Rooms Manager - current # of rooms: ${this.gameRoomsManager.rooms.size}`);
     }
 
     onPlayerLogin(playload) {
@@ -36,15 +50,15 @@ class ConnectionManager {
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
         player.emit("user-loggedin", { roomId: newRoomId });
+
+        Logger.addDividerLabel("One of the users logged-in", "#a623b8");
+        Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
+        Logger.logMessage(`Connection Manager - current # of all users: ${this.connectionsPool.size}`);
+        Logger.logMessage(`Rooms Manager - current # of rooms: ${this.gameRoomsManager.rooms.size}`);
     }
 
     isPlayerConnected(playerId) {
         return this.connectionsPool.has(playerId);
-    }
-
-    logMessage(message) {
-        if(!DEBUG_EVENTS) return;
-        console.log(message);
     }
 }
 
