@@ -49,7 +49,7 @@ class ConnectionManager {
         const player = this.connectionsPool.get(data.id);
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
-        player.emit("user-loggedin", { roomId: newRoomId });
+        player.emit("user-loggedin", { roomId: newRoomId, id: player.id, name: player.name });
 
         Logger.addDividerLabel("One of the users logged-in", "#a623b8");
         Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });

@@ -1,14 +1,11 @@
+
 class Player {
     constructor(socket, id) {
         this.socket = socket;
         this.roomId = "";
-        this.name = ""
+        this.name = "";
         this.id = id;
-
-        this.position = {
-            x: Math.random() * 200,
-            y: Math.random() * 200
-        }
+        this.score = 0;
     }
 
     /**
