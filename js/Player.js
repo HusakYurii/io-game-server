@@ -1,6 +1,9 @@
+const PhysicsObject = require("./physics/PhysicsObject.js");
 
-class Player {
+class Player extends PhysicsObject {
     constructor(socket, id) {
+        super(id);
+
         this.socket = socket;
         this.roomId = "";
         this.name = "";
@@ -43,6 +46,16 @@ class Player {
      */
     on(eventName, callback) {
         this.socket.on(eventName, callback);
+    }
+
+    /**
+     * @extends
+     * @returns {object}
+     */
+    serialize() {
+        const data = super.serialize();
+        data.score = this.score;
+        return data;
     }
 }
 

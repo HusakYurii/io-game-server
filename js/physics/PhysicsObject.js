@@ -3,13 +3,12 @@ const Vector2D = require("./Vector2D.js");
 class PhysicsObject {
     /**
      * @param {string} id
-     * @param {number} x 
-     * @param {number} y 
+     * @param {Vector2D} pos
      * @param {number} r 
      */
-    constructor(id = "", x = 0, y = 0, r = 5) {
+    constructor(id = "", pos = new Vector2D(0, 0), r = 5) {
         this.id = id;
-        this.position = new Vector2D(x, y);
+        this.position = pos;
         this.velocity = new Vector2D(0, 0);
         this.r = r;
     }
@@ -32,6 +31,9 @@ class PhysicsObject {
         this.velocity.multiply(0);
     }
 
+    /**
+     * @returns {object}
+     */
     serialize() {
         return {
             r: this.r,
