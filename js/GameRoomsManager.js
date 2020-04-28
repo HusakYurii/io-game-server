@@ -83,17 +83,20 @@ class RoomsManager {
      * @returns {GameRoom | undefined}
      */
     getFreeRoom() {
-        for(let room of this.rooms.values()) {
-            if(!room.isFull) {
+        for (let room of this.rooms.values()) {
+            if (!room.isFull) {
                 return room;
             }
-        } 
+        }
     }
 
     /**
      * @param {string} roomId 
      */
     deleteRoom(roomId) {
+        const room = this.rooms.get(roomId);
+        room.deleteWorld();
+
         this.rooms.delete(roomId);
     }
 }
