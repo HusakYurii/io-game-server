@@ -1,8 +1,5 @@
-const PhysicsObject = require("./physics/PhysicsObject.js");
-
-class Player extends PhysicsObject {
+class Player {
     constructor(socket, id) {
-        super(id);
 
         this.socket = socket;
         this.roomId = "";
@@ -49,13 +46,15 @@ class Player extends PhysicsObject {
     }
 
     /**
-     * @extends
      * @returns {object}
      */
     serialize() {
-        const data = super.serialize();
-        data.score = this.score;
-        return data;
+        return {
+            roomId: this.roomId,
+            score: this.score,
+            name: this.name,
+            id: this.id,
+        };
     }
 }
 
