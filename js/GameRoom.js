@@ -22,18 +22,17 @@ class GameRoom {
 
     addPlayer(player) {
         this.players.set(player.id, player);
-        this.world.addPlayer(player);
+        this.world.createPlayer(player.id);
     }
 
     deletePlayer(playerId) {
-        const player = this.players.get(playerId);
         this.players.delete(playerId);
-        this.world.removePlayer(player);
+        this.world.removePlayer(playerId);
     }
 
     deleteWorld() {
         this.world.stop();
-        this.world.removeItems();
+        this.world.cleanUpWorld();
     }
 
     /**
