@@ -23,6 +23,7 @@ class ConnectionManager {
         player.emit("user-connected", { id: player.id });
         player.on("disconnect", this.onDisconnection.bind(this, player.id));
         player.on("login-user", this.onPlayerLogin.bind(this));
+        player.on("user-updates", this.onPlayerUpdates.bind(this))
 
         Logger.addDividerLabel("New User connected", "#0b74de");
         Logger.logMessage("New user has beeen connected and user data was send back:");
@@ -44,8 +45,8 @@ class ConnectionManager {
         Logger.logMessage(`Rooms Manager - current # of rooms: ${this.gameRoomsManager.rooms.size}`);
     }
 
-    onPlayerLogin(playload) {
-        const data = JSON.parse(playload);
+    onPlayerLogin(payload) {
+        const data = JSON.parse(payload);
         const player = this.connectionsPool.get(data.id);
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
@@ -55,6 +56,11 @@ class ConnectionManager {
         Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
         Logger.logMessage(`Connection Manager - current # of all users: ${this.connectionsPool.size}`);
         Logger.logMessage(`Rooms Manager - current # of rooms: ${this.gameRoomsManager.rooms.size}`);
+    }
+
+    onPlayerUpdates(payload) {
+        const data = JSON.parse(payload);
+        this.gameRoomsManager.updatePLayer(data);
     }
 
     isPlayerConnected(playerId) {

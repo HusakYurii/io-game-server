@@ -30,6 +30,10 @@ class GameRoom {
         this.world.removePlayer(playerId);
     }
 
+    updatePLayer(data) {
+        this.world.updatePLayer(data);
+    }
+
     deleteWorld() {
         this.world.stop();
         this.world.cleanUpWorld();

@@ -11,6 +11,14 @@ class RoomsManager {
         return this.maxRooms === this.rooms.size;
     }
 
+    updatePLayer(data) {
+        if (!this.hasRoom(data.roomId)) {
+            return;
+        }
+        const room = this.getRoomById(data.roomId);
+        room.updatePLayer(data);
+    }
+
     /**
      * To delete a player from the related room. 
      * Player has not room id only at the Login and Game over states.
