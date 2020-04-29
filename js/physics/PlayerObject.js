@@ -1,8 +1,18 @@
-const PhysicsObject = require("./physics/PhysicsObject.js");
+const PhysicsObject = require("./PhysicsObject.js");
 
 class PlayerObject extends PhysicsObject {
     constructor(id, pos, r) {
         super(id, pos, r);
+    }
+
+    /**
+     * To update object's postions
+     * @override
+     * @param {number} dt - delta time
+     */
+    update(dt) {
+        const vel = this.velocity.copy();
+        this.position.add(vel.multiply(dt));
     }
 
     /**
@@ -15,4 +25,4 @@ class PlayerObject extends PhysicsObject {
     }
 }
 
-module.exports = Player;
+module.exports = PlayerObject;
