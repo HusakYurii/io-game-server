@@ -12,23 +12,27 @@ class PhysicsWorld {
         this.itemsToDelete = [];
         this.itemsIdCounter = -1;
 
-        this.intervalId = "";
+        this.itemsToCreate = 50;
+        this.itemsToRespawn = 0;
+        this.itemsRespawnTimer = 500;
+        this.timeCounter = 0;
+
+        this.loopRennerId = "";
         this.prevTimestamp = 0;
         this.dtConstant = 1000 / 60;
         this.update = this.update.bind(this);
         this.onSendData = () => { };
-
     }
 
     run(onSendData) {
-        this.intervalId = setInterval(this.update, this.dtConstant);
+        this.loopRennerId = setInterval(this.update, this.dtConstant);
         this.prevTimestamp = Date.now();
         this.onSendData = onSendData;
         Logger.addDividerLabel("Physics World Run", "#FFFF00", "#000000");
     }
 
     stop() {
-        clearInterval(this.intervalId);
+        clearInterval(this.loopRennerId);
         Logger.addDividerLabel("Physics World Stopped", "#FFFF00", "#000000");
     }
 
@@ -42,21 +46,19 @@ class PhysicsWorld {
         Logger.addDividerLabel("Physics World Cleaned", "#FFFF00", "#000000");
     }
 
-    createItems() {
-        const items = 50;
-        for (let i = 0; i < items; i += 1) {
-            this.itemsIdCounter += 1;
-            const id = String(this.itemsIdCounter);
-            const pos = new Vector2D(Tools.randomInt(-300, 300), Tools.randomInt(-300, 300))
-            const r = Tools.randomInt(2, 6);
-            this.items.push(new PhysicsObject(id, pos, r));
+    createItems(amount = this.itemsToCreate) {
+        for (let i = 0; i < amount; i += 1) {
+            this.items.push(this.createItem());
         }
-        Logger.logMessage(`${items} items created`);
     }
 
-    removeItem(itemId) {
-        const [item] = this.removeElement(itemId, "items");
-        this.itemsToDelete.push(item);
+    createItem() {
+        this.itemsIdCounter += 1;
+        return new PhysicsObject(
+            String(this.itemsIdCounter),
+            new Vector2D(Tools.randomInt(-300, 300), Tools.randomInt(-300, 300)),
+            Tools.randomInt(6, 12)
+        );
     }
 
     createPlayer(playerId) {
@@ -98,6 +100,7 @@ class PhysicsWorld {
         this.calculateGravity(dt);
         this.updateItems(dt);
         this.calculateCollisions();
+        this.respawnItems(dt);
         this.sendData();
     }
 
@@ -106,8 +109,40 @@ class PhysicsWorld {
     }
 
     calculateGravity(dt) { }
-    updateItems(dt) { }
-    calculateCollisions() { }
+
+    updateItems(dt) {
+        this.items.forEach((item) => item.update(dt));
+    }
+
+    calculateCollisions() {
+        this.players.forEach((player) => {
+            this.items.forEach((item, i) => {
+                const dist = Vector2D.getDistance(player.position, item.position);
+                if (!(dist < player.r + item.r / 2)) {
+                    return;
+                }
+
+                this.itemsToRespawn += 1;
+                this.itemsToDelete.push(...this.items.splice(i, 1));
+                player.countScore(item.r);
+                player.grow(item.r);
+            });
+        });
+    }
+
+    respawnItems(dt) {
+        if (this.itemsToRespawn <= 0) {
+            return;
+        }
+
+        this.timeCounter += dt * this.dtConstant;
+        if (this.timeCounter > this.itemsRespawnTimer) {
+            this.timeCounter = 0;
+            this.itemsToRespawn -= 1;
+            this.items.push(this.createItem());
+        }
+    }
+
     sendData() {
         const serialize = (el) => el.serialize();
 
