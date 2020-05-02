@@ -6,16 +6,6 @@ class PlayerObject extends PhysicsObject {
     }
 
     /**
-     * To update object's postions
-     * @override
-     * @param {number} dt - delta time
-     */
-    update(dt) {
-        const vel = this.velocity.copy();
-        this.position.add(vel.multiply(dt));
-    }
-
-    /**
      * @extends
      * @returns {object}
      */

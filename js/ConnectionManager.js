@@ -60,7 +60,7 @@ class ConnectionManager {
 
     onPlayerUpdates(payload) {
         const data = JSON.parse(payload);
-        this.gameRoomsManager.updatePLayer(data);
+        this.gameRoomsManager.updateMousePos(data);
     }
 
     isPlayerConnected(playerId) {

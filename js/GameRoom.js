@@ -30,8 +30,8 @@ class GameRoom {
         this.world.removePlayer(playerId);
     }
 
-    updatePLayer(data) {
-        this.world.updatePLayer(data);
+    updateMousePos(data) {
+        this.world.updateMousePos(data);
     }
 
     deleteWorld() {

@@ -82,9 +82,9 @@ class PhysicsWorld {
         return this[group].splice(idx, 1);
     }
 
-    updatePLayer(data) {
-        const velocity = new Vector2D(data.x, data.y).normalize();
+    updateMousePos(data) {
         const player = this.players.find((player) => player.id === data.playerId);
+        const velocity = Vector2D.getDirection(player.position, new Vector2D(data.x, data.y));
 
         player.applyForce(velocity);
     }
