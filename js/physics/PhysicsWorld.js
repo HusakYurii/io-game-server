@@ -56,7 +56,7 @@ class PhysicsWorld {
         this.itemsIdCounter += 1;
         return new PhysicsObject(
             String(this.itemsIdCounter),
-            new Vector2D(Tools.randomInt(-300, 300), Tools.randomInt(-300, 300)),
+            new Vector2D(Tools.randomInt(-500, 500), Tools.randomInt(-300, 300)),
             Tools.randomInt(6, 12)
         );
     }
@@ -89,6 +89,9 @@ class PhysicsWorld {
         const velocity = Vector2D.getDirection(player.position, new Vector2D(data.x, data.y));
 
         player.applyForce(velocity);
+        if (data.activate) {
+            player.activate();
+        }
     }
 
     update() {
@@ -97,8 +100,8 @@ class PhysicsWorld {
         this.prevTimestamp = currTimestamp;
 
         this.updatePlayers(dt);
-        this.calculateGravity(dt);
         this.updateItems(dt);
+        this.calculateGravity(dt);
         this.calculateCollisions();
         this.respawnItems(dt);
         this.sendData();
@@ -108,17 +111,29 @@ class PhysicsWorld {
         this.players.forEach((player) => player.update(dt));
     }
 
-    calculateGravity(dt) { }
-
     updateItems(dt) {
         this.items.forEach((item) => item.update(dt));
+    }
+
+    calculateGravity() {
+        this.players.forEach((player) => {
+            if (!player.isActivated) {
+                return;
+            }
+
+            this.items.forEach((item) => {
+                if (!player.canGravitate(item)) {
+                    return;
+                }
+                player.cravitate(item);
+            });
+        });
     }
 
     calculateCollisions() {
         this.players.forEach((player) => {
             this.items.forEach((item, i) => {
-                const dist = Vector2D.getDistance(player.position, item.position);
-                if (!(dist < player.r + item.r / 2)) {
+                if (!player.canAbsorb(item)) {
                     return;
                 }
 
