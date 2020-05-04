@@ -68,22 +68,11 @@ class PhysicsWorld {
     }
 
     removePlayer(playerId) {
-        const [player] = this.removeElement(playerId, "players");
-        this.playersToDelete.push(player);
+        this.players = this.players.filter((player) => {
+            return player.id !== playerId;
+        });
     }
-
-    removeElement(elId, group) {
-        let idx = 0;
-        for (let i = 0; i < this[group].length; i += 1) {
-            if (this[group][i].id === elId) {
-                idx = i;
-                break;
-            }
-        }
-
-        return this[group].splice(idx, 1);
-    }
-
+    
     updateMousePos(data) {
         const player = this.players.find((player) => player.id === data.playerId);
         const velocity = Vector2D.getDirection(player.position, new Vector2D(data.x, data.y));
@@ -138,7 +127,7 @@ class PhysicsWorld {
                 }
 
                 this.itemsToRespawn += 1;
-                this.itemsToDelete.push(...this.items.splice(i, 1));
+                this.items.splice(i, 1);
                 player.countScore(item.r);
                 player.grow(item.r);
             });
@@ -163,18 +152,9 @@ class PhysicsWorld {
 
         const data = {
             time: this.prevTimestamp,
-            players: {
-                toDelete: this.playersToDelete.map(serialize),
-                toUpdate: this.players.map(serialize)
-            },
-            items: {
-                toDelete: this.itemsToDelete.map(serialize),
-                toUpdate: this.items.map(serialize)
-            }
+            players: this.players.map(serialize),
+            items: this.items.map(serialize)
         };
-
-        this.playersToDelete = [];
-        this.itemsToDelete = [];
 
         this.onSendData(data);
     }
