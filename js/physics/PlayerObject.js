@@ -152,7 +152,10 @@ class PlayerObject extends PhysicsObject {
         data.isActivated = this.isActivated;
         data.isCooledDown = this.isCooledDown;
         data.gravityTimer = this.gravityTimer;
+        data.gravityTime = this.gravityTime;
         data.coolDownTimer = this.coolDownTimer;
+        data.coolDownTime = this.coolDownTime;
+        data.gravityRadius = this.gravityRadius;
         return data;
     }
 }
