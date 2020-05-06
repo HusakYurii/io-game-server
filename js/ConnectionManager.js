@@ -20,10 +20,10 @@ class ConnectionManager {
         const player = new Player(playerSocket, playerSocket.id);
         this.connectionsPool.set(player.id, player);
 
-        player.emit("user-connected", { id: player.id });
+        player.emit("player-connected", { id: player.id });
         player.on("disconnect", this.onDisconnection.bind(this, player.id));
-        player.on("login-user", this.onPlayerLogin.bind(this));
-        player.on("user-updates", this.onPlayerUpdates.bind(this))
+        player.on("login-player", this.onPlayerLogin.bind(this));
+        player.on("player-updates", this.onPlayerUpdates.bind(this))
 
         Logger.addDividerLabel("New User connected", "#0b74de");
         Logger.logMessage("New user has beeen connected and user data was send back:");
@@ -50,7 +50,7 @@ class ConnectionManager {
         const player = this.connectionsPool.get(data.id);
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
-        player.emit("user-loggedin", { roomId: newRoomId, id: player.id, name: player.name });
+        player.emit("player-loggedin", { roomId: newRoomId, id: player.id, name: player.name });
 
         Logger.addDividerLabel("One of the users logged-in", "#a623b8");
         Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
@@ -60,7 +60,7 @@ class ConnectionManager {
 
     onPlayerUpdates(payload) {
         const data = JSON.parse(payload);
-        this.gameRoomsManager.updateMousePos(data);
+        this.gameRoomsManager.updatePlayerDir(data);
     }
 
     isPlayerConnected(playerId) {

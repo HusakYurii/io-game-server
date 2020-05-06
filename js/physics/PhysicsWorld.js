@@ -12,7 +12,7 @@ class PhysicsWorld {
         this.itemsToDelete = [];
         this.itemsIdCounter = -1;
 
-        this.itemsToCreate = 50;
+        this.itemsToCreate = 100;
         this.itemsToRespawn = 0;
         this.itemsRespawnTimer = 500;
         this.timeCounter = 0;
@@ -56,13 +56,13 @@ class PhysicsWorld {
         this.itemsIdCounter += 1;
         return new PhysicsObject(
             String(this.itemsIdCounter),
-            new Vector2D(Tools.randomInt(-500, 500), Tools.randomInt(-300, 300)),
+            new Vector2D(Tools.randomInt(-1500, 1500), Tools.randomInt(-1500, 1500)),
             Tools.randomInt(6, 12)
         );
     }
 
     createPlayer(playerId) {
-        const pos = new Vector2D(Tools.randomInt(-300, 300), Tools.randomInt(-300, 300))
+        const pos = new Vector2D(Tools.randomInt(-200, 200), Tools.randomInt(-200, 200))
         const player = new PlayerObject(playerId, pos, 30);
         this.players.push(player);
     }
@@ -73,9 +73,9 @@ class PhysicsWorld {
         });
     }
     
-    updateMousePos(data) {
+    updatePlayerDir(data) {
         const player = this.players.find((player) => player.id === data.playerId);
-        const velocity = Vector2D.getDirection(player.position, new Vector2D(data.x, data.y));
+        const velocity = new Vector2D(data.x, data.y).normalize();
 
         player.applyForce(velocity);
         if (data.activate) {
