@@ -72,7 +72,7 @@ class PhysicsWorld {
             return player.id !== playerId;
         });
     }
-    
+
     updatePlayerDir(data) {
         const player = this.players.find((player) => player.id === data.playerId);
         const velocity = new Vector2D(data.x, data.y).normalize();
@@ -97,7 +97,25 @@ class PhysicsWorld {
     }
 
     updatePlayers(dt) {
-        this.players.forEach((player) => player.update(dt));
+        this.players.forEach((player) => {
+            player.update(dt);
+            this.setWorldsBounds(player)
+        });
+    }
+
+    setWorldsBounds({ position, r }) {
+        const width = 3000;
+        const height = 3000;
+        const curr = position.copy();
+
+        let x, y;
+
+        if (position.x > (width / 2 - r)) x = (width / 2 - r);
+        if (position.x < -(width / 2 - r)) x = -(width / 2 - r);
+        if (position.y > (height / 2 - r)) y = (height / 2 - r);
+        if (position.y < -(height / 2 - r)) y = -(height / 2 - r);
+
+        position.set({ x: x || curr.x, y: y || curr.y });
     }
 
     updateItems(dt) {
