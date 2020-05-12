@@ -1,5 +1,5 @@
 const GameRoom = require('./GameRoom.js');
-const Tools = require('../../shared/Tools.js');
+const { generateId } = require('../../shared/Tools.js');
 
 class RoomsManager {
     constructor() {
@@ -65,7 +65,7 @@ class RoomsManager {
      * @returns {GameRoom}
      */
     createRoom() {
-        const room = new GameRoom(Tools.generateId());
+        const room = new GameRoom(generateId());
         this.rooms.set(room.id, room);
         return room;
     }

@@ -1,4 +1,4 @@
-const PhysicsWorld = require('./physics/PhysicsWorld.js');
+const PhysicsWorld = require('../../physics/PhysicsWorld.js');
 
 class GameRoom {
     constructor(id) {
