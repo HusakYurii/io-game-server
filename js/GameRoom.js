@@ -1,15 +1,17 @@
 const PhysicsWorld = require('../../physics/PhysicsWorld.js');
+const { CONNECTION_CONSTANTS, GAME_CONSTANTS } = require("../../shared/Constants.js");
 
 class GameRoom {
     constructor(id) {
         this.id = id;
-        this.maxPlayers = 5;
+        this.maxPlayers = GAME_CONSTANTS.PLAYERS_AMOUNT;
         this.players = new Map();
         this.onWorldUpdated = this.onWorldUpdated.bind(this);
 
         this.world = new PhysicsWorld();
         this.world.run(this.onWorldUpdated);
         this.world.createItems();
+        this.world.createBots();
     }
 
     get isFull() {
@@ -45,7 +47,7 @@ class GameRoom {
      */
     onWorldUpdated(data) {
         this.players.forEach((player) => {
-            player.emit('server-updates', data);
+            player.emit(CONNECTION_CONSTANTS.SERVER_UPDATES, data);
         });
     }
 }

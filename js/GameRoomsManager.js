@@ -1,9 +1,10 @@
 const GameRoom = require('./GameRoom.js');
 const { generateId } = require('../../shared/Tools.js');
+const { GAME_CONSTANTS } = require("../../shared/Constants.js");
 
 class RoomsManager {
     constructor() {
-        this.maxRooms = 10;
+        this.maxRooms = GAME_CONSTANTS.ROOMS_AMOUNT;
         this.rooms = new Map();
     }
 

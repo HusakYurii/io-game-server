@@ -1,6 +1,6 @@
+const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
 const GameRoomsManager = require('./GameRoomsManager.js');
 const Player = require('./Player.js');
-
 const Logger = require("./Logger.js");
 
 class ConnectionManager {
@@ -11,7 +11,7 @@ class ConnectionManager {
     }
 
     init() {
-        this.connectionSocket.on("connection", this.onConnection.bind(this));
+        this.connectionSocket.on(CONNECTION_CONSTANTS.CONNECTION, this.onConnection.bind(this));
         Logger.addDividerLabel("Initialization");
         Logger.logMessage("Socket initialized...");
     }
@@ -20,10 +20,10 @@ class ConnectionManager {
         const player = new Player(playerSocket, playerSocket.id);
         this.connectionsPool.set(player.id, player);
 
-        player.emit("player-connected", { id: player.id });
-        player.on("disconnect", this.onDisconnection.bind(this, player.id));
-        player.on("login-player", this.onPlayerLogin.bind(this));
-        player.on("player-updates", this.onPlayerUpdates.bind(this))
+        player.emit(CONNECTION_CONSTANTS.PLAYER_CONNECTED, { id: player.id });
+        player.on(CONNECTION_CONSTANTS.DISCONNECT, this.onDisconnection.bind(this, player.id));
+        player.on(CONNECTION_CONSTANTS.LOGIN_PLAYER, this.onPlayerLogin.bind(this));
+        player.on(CONNECTION_CONSTANTS.PLAYER_UPDATES, this.onPlayerUpdates.bind(this))
 
         Logger.addDividerLabel("New User connected", "#0b74de");
         Logger.logMessage("New user has beeen connected and user data was send back:");
@@ -50,7 +50,7 @@ class ConnectionManager {
         const player = this.connectionsPool.get(data.id);
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
-        player.emit("player-loggedin", { roomId: newRoomId, id: player.id, name: player.name });
+        player.emit(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, { roomId: newRoomId, id: player.id, name: player.name });
 
         Logger.addDividerLabel("One of the users logged-in", "#a623b8");
         Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
