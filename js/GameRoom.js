@@ -6,6 +6,7 @@ class GameRoom {
         this.id = id;
         this.maxPlayers = GAME_CONSTANTS.PLAYERS_AMOUNT;
         this.players = new Map();
+
         this.onWorldUpdated = this.onWorldUpdated.bind(this);
 
         this.world = new PhysicsWorld();
@@ -43,11 +44,18 @@ class GameRoom {
 
     /**
      * As soon as world finishes calculation we want to send new data to users
-     * @param {object} data 
+     * @param {object} data
+     * @param {PlayerObject[]} deadPlayers
      */
-    onWorldUpdated(data) {
+    onWorldUpdated(data = {}, deadPlayers = []) {
         this.players.forEach((player) => {
             player.emit(CONNECTION_CONSTANTS.SERVER_UPDATES, data);
+        });
+
+        deadPlayers.forEach((player) => {
+            if (this.players.has(player.id)) {
+                this.players.get(player.id).emit(CONNECTION_CONSTANTS.GAME_OVER);
+            }
         });
     }
 }
