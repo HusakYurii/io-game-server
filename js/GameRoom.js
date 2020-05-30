@@ -33,13 +33,14 @@ class GameRoom {
         this.world.removePlayer(playerId);
     }
 
-    updatePlayerDir(data) {
-        this.world.updatePlayerDir(data);
+    updatePlayerData(data) {
+        this.world.updatePlayerData(data);
     }
 
     deleteWorld() {
         this.world.stop();
         this.world.cleanUpWorld();
+        this.world = null;
     }
 
     /**

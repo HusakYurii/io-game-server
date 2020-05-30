@@ -12,12 +12,12 @@ class RoomsManager {
         return this.maxRooms === this.rooms.size;
     }
 
-    updatePlayerDir(data) {
+    updatePlayerData(data) {
         if (!this.hasRoom(data.roomId)) {
             return;
         }
         const room = this.getRoomById(data.roomId);
-        room.updatePlayerDir(data);
+        room.updatePlayerData(data);
     }
 
     /**
@@ -56,8 +56,6 @@ class RoomsManager {
             }
         }
 
-        player.setRoomId(room.id);
-        player.setName(data.name);
         room.addPlayer(player);
         return room.id;
     }

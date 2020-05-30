@@ -50,6 +50,8 @@ class ConnectionManager {
         const player = this.connectionsPool.get(data.id);
 
         const newRoomId = this.gameRoomsManager.addPlayerToRoom(player, data);
+        player.setRoomId(newRoomId);
+        player.setName(data.name);
         player.emit(CONNECTION_CONSTANTS.PLAYER_LOGGEDIN, { roomId: newRoomId, id: player.id, name: player.name });
 
         Logger.addDividerLabel("One of the users logged-in", "#a623b8");
@@ -60,7 +62,7 @@ class ConnectionManager {
 
     onPlayerUpdates(payload) {
         const data = JSON.parse(payload);
-        this.gameRoomsManager.updatePlayerDir(data);
+        this.gameRoomsManager.updatePlayerData(data);
     }
 
     isPlayerConnected(playerId) {
