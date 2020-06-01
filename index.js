@@ -13,7 +13,7 @@ expressApp.use(Express.static(path.join(__dirname, '../dist/client')));
 const connectionManager = new ConnectionManager(socketIo);
 connectionManager.init();
 
-httpServer.listen(PORT, (err) => {
+httpServer.listen(PORT, "192.168.168.101", (err) => {
     if (err) {
         throw new Error(err);
     }
