@@ -23,19 +23,19 @@ class ConnectionManager {
         player.emit(CONNECTION_CONSTANTS.PLAYER_CONNECTED, { id: player.id });
         player.on(CONNECTION_CONSTANTS.DISCONNECT, this.onDisconnection.bind(this, player.id));
         player.on(CONNECTION_CONSTANTS.LOGIN_PLAYER, this.onPlayerLogin.bind(this));
-        player.on(CONNECTION_CONSTANTS.PLAYER_UPDATES, this.onPlayerUpdates.bind(this))
+        player.on(CONNECTION_CONSTANTS.PLAYER_UPDATES, this.onPlayerUpdates.bind(this));
+        player.on(CONNECTION_CONSTANTS.RESTART_GAME, this.onGameRestart.bind(this));
 
         Logger.addDividerLabel("New User connected", "#0b74de");
         Logger.logMessage("New user has beeen connected and user data was send back:");
         Logger.logData({ id: player.id, roomId: player.roomId, name: player.name });
     }
 
-    onDisconnection(playerId) {
-
-        const player = this.connectionsPool.get(playerId);
-        this.connectionsPool.delete(playerId);
+    onDisconnection(id) {
+        const player = this.connectionsPool.get(id);
         player.removeAllListeners();
 
+        this.connectionsPool.delete(id);
         this.gameRoomsManager.deletePlayerFromRoom(player);
 
         Logger.addDividerLabel("A User disconnected", "#28a134");
@@ -63,6 +63,21 @@ class ConnectionManager {
     onPlayerUpdates(payload) {
         const data = JSON.parse(payload);
         this.gameRoomsManager.updatePlayerData(data);
+    }
+
+    onGameRestart(payload) {
+        const data = JSON.parse(payload);
+        const player = this.connectionsPool.get(data.id);
+
+        this.gameRoomsManager.deletePlayerFromRoom(player);
+
+        player.setRoomId("");
+        player.setName("");
+        player.emit(CONNECTION_CONSTANTS.GAME_RESTARTED, { id: player.id });
+
+        Logger.addDividerLabel(`Game restarted for user id: ${player.id }`, "#a653b8");
+        Logger.logMessage(`Connection Manager - current # of all users: ${this.connectionsPool.size}`);
+        Logger.logMessage(`Rooms Manager - current # of rooms: ${this.gameRoomsManager.rooms.size}`);
     }
 
     isPlayerConnected(playerId) {
