@@ -1,6 +1,6 @@
 const GameRoom = require('./GameRoom.js');
-const { generateId } = require('../../shared/Tools.js');
-const { GAME_CONSTANTS } = require("../../shared/Constants.js");
+const { generateId } = require('../shared/Tools.js');
+const { GAME_CONSTANTS } = require("../shared/Constants.js");
 
 class RoomsManager {
     constructor() {

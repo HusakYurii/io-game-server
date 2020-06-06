@@ -1,5 +1,5 @@
-const PhysicsWorld = require('../../physics/PhysicsWorld.js');
-const { CONNECTION_CONSTANTS, GAME_CONSTANTS } = require("../../shared/Constants.js");
+const World = require('../gameEngine/World.js');
+const { CONNECTION_CONSTANTS, GAME_CONSTANTS } = require("../shared/Constants.js");
 
 class GameRoom {
     constructor(id) {
@@ -9,7 +9,7 @@ class GameRoom {
 
         this.onWorldUpdated = this.onWorldUpdated.bind(this);
 
-        this.world = new PhysicsWorld();
+        this.world = new World();
         this.world.run(this.onWorldUpdated);
         this.world.createItems();
         this.world.createBots();

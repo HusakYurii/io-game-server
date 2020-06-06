@@ -1,4 +1,4 @@
-const { CONNECTION_CONSTANTS } = require("../../shared/Constants.js");
+const { CONNECTION_CONSTANTS } = require("../shared/Constants.js");
 const GameRoomsManager = require('./GameRoomsManager.js');
 const Player = require('./Player.js');
 const Logger = require("./Logger.js");
