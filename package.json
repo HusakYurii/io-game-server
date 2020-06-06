@@ -2,7 +2,10 @@
   "name": "io-game-server",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "start": "node ./index.js",
+    "start-debug": "node --inspect ./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HusakYurii/io-game-server.git"

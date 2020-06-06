@@ -7,13 +7,16 @@ const socketIo = require('socket.io')(httpServer);
 const ConnectionManager = require('./js/ConnectionManager.js');
 
 const PORT = process.env.PORT || 9090;
-
-expressApp.use(Express.static(path.join(__dirname, '../dist/client')));
+ 
+// const url = "192.168.168.101";
+// if ( not prod ) {
+//      expressApp.use(Express.static(path.join(__dirname, '../dist/client')));
+//  }
 
 const connectionManager = new ConnectionManager(socketIo);
 connectionManager.init();
 
-httpServer.listen(PORT, "192.168.168.101", (err) => {
+httpServer.listen(PORT, (err) => {
     if (err) {
         throw new Error(err);
     }
