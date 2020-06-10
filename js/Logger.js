@@ -21,6 +21,6 @@ class Logger {
 }
 
 // I assume that while production I will have something in this variable
-Logger.isProduction = !!process.env.NODE_ENV;
+Logger.isProduction = process.env.NODE_ENV !== undefined;
 
 module.exports = Logger;
