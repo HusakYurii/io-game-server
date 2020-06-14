@@ -1,4 +1,4 @@
-const PlayerObject = require("./Player.js");
+const PlayerObject = require("./PlayerObject.js");
 const Vector2D = require("../shared/Vector2D.js");
 const { randomFloat, randomInt } = require("../shared/Tools.js");
 const { GAME_CONSTANTS } = require("../shared/Constants.js");

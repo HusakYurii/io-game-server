@@ -1,8 +1,8 @@
 const Logger = require("../js/Logger.js");
 const Vector2D = require("../shared/Vector2D.js");
-const PhysicsObject = require("./Object.js");
-const PlayerObject = require("./Player.js");
-const BotObject = require("./Bot.js");
+const PhysicsObject = require("./PhysicsObject.js");
+const PlayerObject = require("./PlayerObject.js");
+const BotObject = require("./BotObject.js");
 const { randomInt, randomFloat } = require("../shared/Tools.js");
 const { GAME_CONSTANTS } = require("../shared/Constants.js");
 

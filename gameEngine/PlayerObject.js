@@ -1,6 +1,10 @@
-const PhysicsObject = require("./Object.js");
+const PhysicsObject = require("./PhysicsObject.js");
 const Vector2D = require("../shared/Vector2D.js");
 const { GAME_CONSTANTS } = require("../shared/Constants.js");
+const {
+    PLAYER_GRAVITY_TIME, PLAYER_COOLDOWN_TIME_RANGE,
+    PLAYER_SPEED_RANGE, LOOP_DELTA_TIME, GRAVITY_RADIUS_SIZE_RANGE
+} = GAME_CONSTANTS;
 
 class PlayerObject extends PhysicsObject {
     constructor(id, pos, r) {
@@ -8,18 +12,19 @@ class PlayerObject extends PhysicsObject {
 
         this.score = 0;
 
-        this.gravityTime = GAME_CONSTANTS.PLAYER_GRAVITY_TIME;
+        this.gravityTime = PLAYER_GRAVITY_TIME;
         this.gravityTimer = 0;
         this.isActivated = false;
 
-        this.gravityR = 3 * this.r;
+        const [grMin, grMax] = GRAVITY_RADIUS_SIZE_RANGE;
+        this.gravityR = grMax * this.r;
 
-        const [cdtMin, cdtMax] = GAME_CONSTANTS.PLAYER_COOLDOWN_TIME_RANGE
+        const [cdtMin, cdtMax] = PLAYER_COOLDOWN_TIME_RANGE
         this.coolDownTime = cdtMin;
         this.coolDownTimer = 0;
         this.isCooledDown = true;
 
-        const [velMin, velMax] = GAME_CONSTANTS.PLAYER_SPEED_RANGE;
+        const [velMin, velMax] = PLAYER_SPEED_RANGE;
         this.currVelocity = velMax;
         this.originalR = r;
     }
@@ -32,11 +37,6 @@ class PlayerObject extends PhysicsObject {
 
         this.isActivated = true;
         this.isCooledDown = false;
-    }
-
-    /** To deactivate gravity force */
-    deactivate() {
-        this.isActivated = false;
     }
 
     /**
@@ -54,7 +54,10 @@ class PlayerObject extends PhysicsObject {
      */
     grow(size) {
         this.r = Math.sqrt(this.r * this.r + size * size);
-        this.currVelocity = this.calcVelocity(false);
+        /** Update all properties related to the size */
+        this.updateVelocity();
+        this.updateGravityRadius();
+        this.updateCoolDownTime();
     }
 
     /**
@@ -65,7 +68,6 @@ class PlayerObject extends PhysicsObject {
     update(dt) {
         this.updateGravityTimer(dt);
         this.updateCoolDownTimer(dt);
-        this.updateGravityR();
 
         this.velocity.multiply(this.currVelocity);
 
@@ -81,11 +83,10 @@ class PlayerObject extends PhysicsObject {
             return;
         }
 
-        this.gravityTimer += dt * GAME_CONSTANTS.LOOP_DELTA_TIME;
+        this.gravityTimer += dt * LOOP_DELTA_TIME;
         if (this.gravityTimer >= this.gravityTime) {
             this.gravityTimer = 0;
-            this.deactivate();
-            this.updateGravityTime();
+            this.isActivated = false;
         }
     }
 
@@ -98,46 +99,66 @@ class PlayerObject extends PhysicsObject {
             return;
         }
 
-        this.coolDownTimer += dt * GAME_CONSTANTS.LOOP_DELTA_TIME;
+        this.coolDownTimer += dt * LOOP_DELTA_TIME;
         if (this.coolDownTimer >= this.coolDownTime) {
             this.coolDownTimer = 0;
             this.isCooledDown = true;
-            this.updatecoolDownTime();
         }
     }
 
-    updateGravityR() {
-        this.gravityR = 3 * this.r;
+    /**
+     * The gravity radius should be growing because the body is growing as well,
+     * But I want to balance it a little bit, so it will grow with some easing
+     * GR(k) = k * (GRMax * r)
+     */
+    updateGravityRadius() {
+        const [grMin, grMax] = GRAVITY_RADIUS_SIZE_RANGE;
+
+        const k = this.easeValues(grMin, grMax, 0.33);
+
+        this.gravityR = Number((k * grMax * this.r).toFixed(4));
     }
 
-    updatecoolDownTime() {
-        // based on new R update min, max timer
-    }
+    /**
+     * Set new CD time based on the player new size
+     * CD(k) = CDMax / k
+     */
+    updateCoolDownTime() {
+        const [cdtMin, cdtMax] = PLAYER_COOLDOWN_TIME_RANGE
 
-    updateGravityTime() {
-        // based on new R update min, max timer
+        const k = this.easeValues(cdtMin, cdtMax, 0.34);
+
+        this.coolDownTime = Number((cdtMin / k).toFixed(4));
     }
 
     /**
      * Velocity is chenged by easing of 
-     * V(k) = k^n * Vmax
-     * k = (Roriginal / Rnew)^n
-     * 1 >= k >= Vmin/Vmax
-     * @param {boolean} isDestructed - if a player is being destructured make his speed up quicker
-     * @returns {number};
+     * V(k) = k * Vmax
      */
-    calcVelocity(isDestructed) {
-        const [velMin, velMax] = GAME_CONSTANTS.PLAYER_SPEED_RANGE;
-        const sizeRatio = this.originalR / this.r;
-        const speedRatio = velMin / velMax;
-        const power = isDestructed ? 0.5 : 0.8; // TODO think about more accurate easing
+    updateVelocity() {
+        const [velMin, velMax] = PLAYER_SPEED_RANGE;
 
-        let k = Math.pow(sizeRatio, power);
-        k = (k >= 1) ? 1 : (k >= speedRatio) ? k : speedRatio;
+        const k = this.easeValues(velMin, velMax, 0.32);
 
-        let vel = (Math.pow(k, power) * velMax);
-        vel = Number(vel.toFixed(4));
-        return vel;
+        this.currVelocity = Number((k * velMax).toFixed(4));
+    }
+
+    /**
+     * k = (1 / (Roriginal / Rnew))^n
+     * 1 >= k >= Vmin/Vmax
+     * @param {number} min
+     * @param {number} max 
+     * @param {number} pow
+     * @returns {number} 
+     */
+    easeValues(min, max, pow) {
+        const maxRatio = 1;
+        const minRatio = min / max;
+        const sizeRatio = 1 / (this.r / this.originalR);
+
+        let k = Math.pow(sizeRatio, pow);
+        k = (k >= maxRatio) ? maxRatio : (k >= minRatio) ? k : minRatio;
+        return k;
     }
 
     /**
@@ -173,8 +194,10 @@ class PlayerObject extends PhysicsObject {
      */
     destruct(size) {
         this.r = Math.sqrt(this.r * this.r - size * size);
-        this.currVelocity = this.calcVelocity(true);
-        this.countScore(-size);
+        /** Update all properties related to the size */
+        this.updateVelocity();
+        this.updateGravityRadius();
+        this.updateCoolDownTime();
     }
 
     /**
@@ -204,7 +227,6 @@ class PlayerObject extends PhysicsObject {
     }
 
     /**
-     * @extends
      * @returns {object}
      */
     serialize() {
