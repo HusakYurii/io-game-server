@@ -1,6 +1,6 @@
 const GAME_CONSTANTS = Object.freeze({
     ITEM_RESPAWN_TIME_RANGE: [200, 500],
-    ITEM_AMOUNT: 300,
+    ITEM_AMOUNT: 200, // number of items to spawn at the start
     MAX_ITEMS_AMOUNT: 500,
     ITEM_SIZE_RANGE: [8, 16], // min - max
     DESTRUCTURED_ITEM_SIZE_RANGE: [4, 8],
@@ -13,15 +13,15 @@ const GAME_CONSTANTS = Object.freeze({
     BOT_RESPAWN_TIME_RANGE: [2000, 10000],
     BOT_SIZE: 30,
 
-    PLAYERS_AMOUNT: 10,
+    PLAYERS_AMOUNT: 10, // max players in one game room
     PLAYER_SPEED_RANGE: [1, 4],
-    // PLAYER_GRAVITY_TIME_RANGE: [3500, 6000],  // as a player grows the gravity action time goes down
-    PLAYER_GRAVITY_TIME: 3500, // maybe constant ?
+    PLAYER_GRAVITY_TIME: 3500,
+    GRAVITY_RADIUS_SIZE_RANGE: [1.5, 3.5], 
 
-    PLAYER_COOLDOWN_TIME_RANGE: [5000, 10000], // as a player grows the colldown time goes up
+    PLAYER_COOLDOWN_TIME_RANGE: [4000, 10000], // as a player grows the colldown time goes up
     PLAYER_SIZE: 30,
 
-    ROOMS_AMOUNT: 10,
+    ROOMS_AMOUNT: 10, // max game rooms being held by the server
     LOOP_DELTA_TIME: 1000 / 60,
     WORLD_WIDTH: 3000,
     WORLD_HEIGTH: 3000,
